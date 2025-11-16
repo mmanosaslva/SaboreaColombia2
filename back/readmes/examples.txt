@@ -5,7 +5,7 @@
 - Orinoquía
 - Amazonia
 
-**Ejemplos por Región:**
+**Ejemplos por REGION:**
 - Caribe: Cartagena, Santa Marta
 - Andina: Bogotá, Medellín
 - Pacífica: Cali, Buenaventura
