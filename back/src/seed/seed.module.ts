@@ -4,8 +4,9 @@ import { RegionEntity } from '../regiones/entities/region.entity';
 import { CiudadEntity } from '../ciudades/entities/ciudad.entity';
 import { PlatoEntity } from '../platos/entities/plato.entity';
 import { RestauranteEntity } from '../restaurantes/entities/restaurante.entity';
-import { UsuarioEntity } from '../usuarios/entities/usuario.entity';
+import { PlatoRestauranteEntity } from '../plato-restaurante/entities/plato-restaurante.entity';
 import { SeedService } from './seed.service';
+import { SeedController } from './seed.controller'; // ← Agrega esta línea
 
 @Module({
   imports: [
@@ -14,9 +15,11 @@ import { SeedService } from './seed.service';
       CiudadEntity,
       PlatoEntity,
       RestauranteEntity,
-      UsuarioEntity,
+      PlatoRestauranteEntity,
     ]),
   ],
+  controllers: [SeedController], // ← Agrega el controlador aquí
   providers: [SeedService],
+  exports: [SeedService],
 })
 export class SeedModule {}

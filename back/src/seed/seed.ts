@@ -32,61 +32,29 @@ export class SeedService {
   ) {}
 
   /**
- * Limpia todos los datos existentes antes de insertar
- */
-private async cleanDatabase(): Promise<void> {
-  console.log('🧹 Limpiando datos existentes...');
-  
-  try {
-    // Opción 1: Usar clear() 
-    await this.platoRestauranteRepository.clear();
-    await this.restauranteRepository.clear();
-    await this.platoRepository.clear();
-    await this.ciudadRepository.clear();
-    await this.regionRepository.clear();
-    
-    console.log('✅ Datos existentes eliminados\n');
-  } catch (error) {
-    console.log('⚠️  Usando método alternativo para limpiar datos...');
-    
-    // Opción 2: Usar query builder como respaldo
-    await this.platoRestauranteRepository.createQueryBuilder().delete().execute();
-    await this.restauranteRepository.createQueryBuilder().delete().execute();
-    await this.platoRepository.createQueryBuilder().delete().execute();
-    await this.ciudadRepository.createQueryBuilder().delete().execute();
-    await this.regionRepository.createQueryBuilder().delete().execute();
-    
-    console.log('✅ Datos existentes eliminados (método alternativo)\n');
-  }
-}
+   * Ejecuta la siembra completa de datos
+   */
+  async seed(): Promise<void> {
+    console.log('🌱 Iniciando siembra de datos...\n');
 
-  /**
- * Ejecuta la siembra completa de datos
- */
-async seed(): Promise<void> {
-  console.log('🌱 Iniciando siembra de datos...\n');
+    try {
+      // 1. Regiones
+      const regiones = await this.seedRegiones();
 
-  try {
-    // 🔄 NUEVO: Limpiar base de datos antes de insertar
-    await this.cleanDatabase();
+      // 2. Ciudades
+      const ciudades = await this.seedCiudades(regiones);
 
-    // 1. Regiones
-    const regiones = await this.seedRegiones();
+      // 3. Platos
+      const platos = await this.seedPlatos(regiones);
 
-    // 2. Ciudades
-    const ciudades = await this.seedCiudades(regiones);
+      // 4. Restaurantes
+      const restaurantes = await this.seedRestaurantes(ciudades);
 
-    // 3. Platos
-    const platos = await this.seedPlatos(regiones);
+      // 5. Relaciones Plato-Restaurante
+      await this.seedPlatoRestaurante(platos, restaurantes);
 
-    // 4. Restaurantes
-    const restaurantes = await this.seedRestaurantes(ciudades);
-
-    // 5. Relaciones Plato-Restaurante
-    await this.seedPlatoRestaurante(platos, restaurantes);
-
-    console.log('✨ ¡Siembra de datos completada exitosamente!');
-    console.log(`
+      console.log('✨ ¡Siembra de datos completada exitosamente!');
+      console.log(`
 📊 RESUMEN:
    • 5 regiones
    • 10 ciudades
@@ -94,11 +62,11 @@ async seed(): Promise<void> {
    • 20 restaurantes
    • 60 relaciones plato-restaurante
       `);
-  } catch (error) {
-    console.error('❌ Error durante la siembra:', error.message);
-    throw error;
+    } catch (error) {
+      console.error('❌ Error durante la siembra:', error.message);
+      throw error;
+    }
   }
-}
 
   /**
    * Siembra las regiones de Colombia
@@ -615,8 +583,8 @@ async seed(): Promise<void> {
       {
         nombre: 'Frutas Del Río',
         descripcion:
-          'Experiencia gastronómica amazónica con frutas exóticas y sabores únicos del río.',
-        direccion: 'Avenida Principal 34-56, Puerto Nariño',
+          'Experiencia gastronómica amazónica con frutas tropicales y pescado fresco.',
+        direccion: 'Avenida del Comercio 45-67, Puerto Nariño',
         telefono: '+57 8 4272345',
         horario: 'Lun-Dom: 1:00 PM - 10:00 PM',
         imagenUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400',
@@ -628,7 +596,7 @@ async seed(): Promise<void> {
     console.log(`✅ ${restaurantes.length} restaurantes insertados\n`);
     return restaurantes;
   }
-  
+
   /**
    * Siembra las relaciones entre platos y restaurantes
    */
@@ -636,86 +604,353 @@ async seed(): Promise<void> {
     platos: PlatoEntity[],
     restaurantes: RestauranteEntity[],
   ): Promise<void> {
-    console.log(' Creando relaciones plato-restaurante...')
-    
-      const relacionesData: Array<{
-      platoId: string;
-      restauranteId: string;
-      precio: number;
-      disponible: boolean;
-    }> = [];
+    console.log('🔗 Insertando relaciones plato-restaurante...');
 
-    // Agrupar platos por región (índice 0-2: Caribe, 3-5: Andina, etc.)
-    const platosPorRegion = [
-      platos.slice(0, 3),   // Caribe
-      platos.slice(3, 6),   // Andina
-      platos.slice(6, 9),   // Pacífica
-      platos.slice(9, 12),  // Orinoquía
-      platos.slice(12, 15), // Amazonia
+    const platoRestauranteData = [
+      // El Cevichería Del Mar (Cartagena) - 2 platos
+      {
+        platoId: platos[0].id,
+        restauranteId: restaurantes[0].id,
+        precio: 45000,
+        disponible: true,
+      },
+      {
+        platoId: platos[2].id,
+        restauranteId: restaurantes[0].id,
+        precio: 52000,
+        disponible: true,
+      },
+
+      // Casa Costanera (Cartagena) - 3 platos
+      {
+        platoId: platos[0].id,
+        restauranteId: restaurantes[1].id,
+        precio: 42000,
+        disponible: true,
+      },
+      {
+        platoId: platos[1].id,
+        restauranteId: restaurantes[1].id,
+        precio: 38000,
+        disponible: true,
+      },
+      {
+        platoId: platos[2].id,
+        restauranteId: restaurantes[1].id,
+        precio: 50000,
+        disponible: true,
+      },
+
+      // Sierra & Mar (Santa Marta) - 2 platos
+      {
+        platoId: platos[1].id,
+        restauranteId: restaurantes[2].id,
+        precio: 40000,
+        disponible: true,
+      },
+      {
+        platoId: platos[2].id,
+        restauranteId: restaurantes[2].id,
+        precio: 48000,
+        disponible: true,
+      },
+
+      // Pescado Fresco del Caribe (Santa Marta) - 3 platos
+      {
+        platoId: platos[0].id,
+        restauranteId: restaurantes[3].id,
+        precio: 43000,
+        disponible: true,
+      },
+      {
+        platoId: platos[1].id,
+        restauranteId: restaurantes[3].id,
+        precio: 39000,
+        disponible: true,
+      },
+      {
+        platoId: platos[2].id,
+        restauranteId: restaurantes[3].id,
+        precio: 51000,
+        disponible: true,
+      },
+
+      // El Ajiaco Bogotano (Bogotá) - 2 platos
+      {
+        platoId: platos[4].id,
+        restauranteId: restaurantes[4].id,
+        precio: 32000,
+        disponible: true,
+      },
+      {
+        platoId: platos[5].id,
+        restauranteId: restaurantes[4].id,
+        precio: 28000,
+        disponible: true,
+      },
+
+      // Cocina Muisca (Bogotá) - 3 platos
+      {
+        platoId: platos[3].id,
+        restauranteId: restaurantes[5].id,
+        precio: 48000,
+        disponible: true,
+      },
+      {
+        platoId: platos[4].id,
+        restauranteId: restaurantes[5].id,
+        precio: 35000,
+        disponible: true,
+      },
+      {
+        platoId: platos[5].id,
+        restauranteId: restaurantes[5].id,
+        precio: 30000,
+        disponible: true,
+      },
+
+      // Bandeja Paisa Auténtica (Medellín) - 2 platos
+      {
+        platoId: platos[3].id,
+        restauranteId: restaurantes[6].id,
+        precio: 55000,
+        disponible: true,
+      },
+      {
+        platoId: platos[5].id,
+        restauranteId: restaurantes[6].id,
+        precio: 32000,
+        disponible: true,
+      },
+
+      // La Arepa Antioqueña (Medellín) - 3 platos
+      {
+        platoId: platos[3].id,
+        restauranteId: restaurantes[7].id,
+        precio: 52000,
+        disponible: true,
+      },
+      {
+        platoId: platos[4].id,
+        restauranteId: restaurantes[7].id,
+        precio: 33000,
+        disponible: true,
+      },
+      {
+        platoId: platos[5].id,
+        restauranteId: restaurantes[7].id,
+        precio: 29000,
+        disponible: true,
+      },
+
+      // Sancocho de Oro (Cali) - 2 platos
+      {
+        platoId: platos[6].id,
+        restauranteId: restaurantes[8].id,
+        precio: 40000,
+        disponible: true,
+      },
+      {
+        platoId: platos[7].id,
+        restauranteId: restaurantes[8].id,
+        precio: 58000,
+        disponible: true,
+      },
+
+      // Mariscos El Pacífico (Cali) - 3 platos
+      {
+        platoId: platos[6].id,
+        restauranteId: restaurantes[9].id,
+        precio: 42000,
+        disponible: true,
+      },
+      {
+        platoId: platos[7].id,
+        restauranteId: restaurantes[9].id,
+        precio: 60000,
+        disponible: true,
+      },
+      {
+        platoId: platos[8].id,
+        restauranteId: restaurantes[9].id,
+        precio: 55000,
+        disponible: true,
+      },
+
+      // Pescadería Costera (Buenaventura) - 2 platos
+      {
+        platoId: platos[6].id,
+        restauranteId: restaurantes[10].id,
+        precio: 38000,
+        disponible: true,
+      },
+      {
+        platoId: platos[8].id,
+        restauranteId: restaurantes[10].id,
+        precio: 52000,
+        disponible: true,
+      },
+
+      // El Puerto Sabroso (Buenaventura) - 3 platos
+      {
+        platoId: platos[6].id,
+        restauranteId: restaurantes[11].id,
+        precio: 39000,
+        disponible: true,
+      },
+      {
+        platoId: platos[7].id,
+        restauranteId: restaurantes[11].id,
+        precio: 56000,
+        disponible: true,
+      },
+      {
+        platoId: platos[8].id,
+        restauranteId: restaurantes[11].id,
+        precio: 54000,
+        disponible: true,
+      },
+
+      // Carne Llanera Al Fuego (Villavicencio) - 2 platos
+      {
+        platoId: platos[9].id,
+        restauranteId: restaurantes[12].id,
+        precio: 48000,
+        disponible: true,
+      },
+      {
+        platoId: platos[11].id,
+        restauranteId: restaurantes[12].id,
+        precio: 35000,
+        disponible: true,
+      },
+
+      // El Vaquero Sabroso (Villavicencio) - 3 platos
+      {
+        platoId: platos[9].id,
+        restauranteId: restaurantes[13].id,
+        precio: 46000,
+        disponible: true,
+      },
+      {
+        platoId: platos[10].id,
+        restauranteId: restaurantes[13].id,
+        precio: 42000,
+        disponible: true,
+      },
+      {
+        platoId: platos[11].id,
+        restauranteId: restaurantes[13].id,
+        precio: 33000,
+        disponible: true,
+      },
+
+      // Asado Tradicional Llanero (Puerto López) - 2 platos
+      {
+        platoId: platos[9].id,
+        restauranteId: restaurantes[14].id,
+        precio: 47000,
+        disponible: true,
+      },
+      {
+        platoId: platos[11].id,
+        restauranteId: restaurantes[14].id,
+        precio: 34000,
+        disponible: true,
+      },
+
+      // Pescado Del Llano (Puerto López) - 3 platos
+      {
+        platoId: platos[9].id,
+        restauranteId: restaurantes[15].id,
+        precio: 45000,
+        disponible: true,
+      },
+      {
+        platoId: platos[10].id,
+        restauranteId: restaurantes[15].id,
+        precio: 41000,
+        disponible: true,
+      },
+      {
+        platoId: platos[11].id,
+        restauranteId: restaurantes[15].id,
+        precio: 32000,
+        disponible: true,
+      },
+
+      // Sabores Amazónicos (Leticia) - 2 platos
+      {
+        platoId: platos[12].id,
+        restauranteId: restaurantes[16].id,
+        precio: 44000,
+        disponible: true,
+      },
+      {
+        platoId: platos[14].id,
+        restauranteId: restaurantes[16].id,
+        precio: 49000,
+        disponible: true,
+      },
+
+      // La Casa Amazónica (Leticia) - 3 platos
+      {
+        platoId: platos[12].id,
+        restauranteId: restaurantes[17].id,
+        precio: 42000,
+        disponible: true,
+      },
+      {
+        platoId: platos[13].id,
+        restauranteId: restaurantes[17].id,
+        precio: 38000,
+        disponible: true,
+      },
+      {
+        platoId: platos[14].id,
+        restauranteId: restaurantes[17].id,
+        precio: 47000,
+        disponible: true,
+      },
+
+      // Piraña Dorada (Puerto Nariño) - 2 platos
+      {
+        platoId: platos[13].id,
+        restauranteId: restaurantes[18].id,
+        precio: 40000,
+        disponible: true,
+      },
+      {
+        platoId: platos[14].id,
+        restauranteId: restaurantes[18].id,
+        precio: 48000,
+        disponible: true,
+      },
+
+      // Frutas Del Río (Puerto Nariño) - 3 platos
+      {
+        platoId: platos[12].id,
+        restauranteId: restaurantes[19].id,
+        precio: 41000,
+        disponible: true,
+      },
+      {
+        platoId: platos[13].id,
+        restauranteId: restaurantes[19].id,
+        precio: 37000,
+        disponible: true,
+      },
+      {
+        platoId: platos[14].id,
+        restauranteId: restaurantes[19].id,
+        precio: 46000,
+        disponible: true,
+      },
     ];
 
-    // Agrupar restaurantes por región (2 restaurantes por ciudad, 2 ciudades por región)
-    const restaurantesPorRegion = [
-      restaurantes.slice(0, 4),   // Caribe: Cartagena(0-1) + Santa Marta(2-3)
-      restaurantes.slice(4, 8),   // Andina: Bogotá(4-5) + Medellín(6-7)
-      restaurantes.slice(8, 12),  // Pacífica: Cali(8-9) + Buenaventura(10-11)
-      restaurantes.slice(12, 16), // Orinoquía: Villavicencio(12-13) + Puerto López(14-15)
-      restaurantes.slice(16, 20), // Amazonia: Leticia(16-17) + Puerto Nariño(18-19)
-    ];
-
-    // Crear relaciones para cada región
-    for (let regionIndex = 0; regionIndex < 5; regionIndex++) {
-      const platosRegion = platosPorRegion[regionIndex];
-      const restaurantesRegion = restaurantesPorRegion[regionIndex];
-
-      for (const restaurante of restaurantesRegion) {
-        // Cada restaurante sirve 2-3 platos de su región
-        const numPlatos = Math.floor(Math.random() * 2) + 2; // 2 o 3 platos
-        const platosSeleccionados = this.getRandomElements(platosRegion, numPlatos);
-
-        for (const plato of platosSeleccionados) {
-          relacionesData.push({
-            platoId: plato.id,
-            restauranteId: restaurante.id,
-            precio: this.generatePrecio(plato.nombre),
-            disponible: true,
-          });
-        }
-      }
-    }
-
-    await this.platoRestauranteRepository.save(relacionesData);
-    console.log(`✅ ${relacionesData.length} relaciones plato-restaurante insertadas\n`);
+    await this.platoRestauranteRepository.save(platoRestauranteData);
+    console.log(
+      `✅ ${platoRestauranteData.length} relaciones plato-restaurante insertadas\n`,
+    );
   }
-
-  /**
-   * Obtiene elementos aleatorios de un array
-   */
-  private getRandomElements<T>(array: T[], count: number): T[] {
-    const shuffled = [...array].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-  }
-
-  /**
-   * Genera un precio realista basado en el nombre del plato
-   */
-  private generatePrecio(nombrePlato: string): number {
-    // Precios base según el tipo de plato
-    if (nombrePlato.includes('Ceviche') || nombrePlato.includes('Mariscos')) {
-      return 25000 + Math.floor(Math.random() * 15000);
-    }
-    if (nombrePlato.includes('Bandeja') || nombrePlato.includes('Carne')) {
-      return 22000 + Math.floor(Math.random() * 10000);
-    }
-    if (nombrePlato.includes('Ajiaco') || nombrePlato.includes('Sancocho')) {
-      return 18000 + Math.floor(Math.random() * 8000);
-    }
-    if (nombrePlato.includes('Arepa')) {
-      return 8000 + Math.floor(Math.random() * 5000);
-    }
-    // Precio base para otros platos
-    return 15000 + Math.floor(Math.random() * 10000);
-  }
-
-  
 }
