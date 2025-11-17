@@ -1,0 +1,1 @@
+![MER - Saborea Colombia](../img/MER.png)
