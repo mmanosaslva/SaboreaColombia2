@@ -261,4 +261,4 @@
 - **Públicos:** 9 (exploración, búsqueda)
 - **Admin:** 7 (crear, actualizar, eliminar)
 
-➡️ [Volver al índice](https://github.com/mmanosaslva/SaboreaColombia2/tree/main/back#readme)
+➡️ [Volver al índice](https://github.com/mmanosaslva/SaboreaColombia2/tree/main)
