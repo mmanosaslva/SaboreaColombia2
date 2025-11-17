@@ -1,15 +1,15 @@
 # 🐳 DOCKER SETUP - SABOREA COLOMBIA
 
 ## 📚 Índice
-1. [¿Qué es Docker?](#qué-es-docker)
-2. [¿Por qué Docker?](#por-qué-docker)
-3. [Conceptos clave](#conceptos-clave)
-4. [Requisitos](#requisitos)
-5. [Pasos para usar Docker](#pasos-para-usar-docker)
-6. [Flujo visual](#flujo-visual)
-7. [Comandos útiles](#comandos-útiles)
-8. [Troubleshooting](#troubleshooting)
-9. [Checklist](#checklist)
+1. [¿Qué es Docker?](https://github.com/mmanosaslva/SaboreaColombia2/blob/main/back/readmes/06-docker-setup.md#-qué-es-docker)
+2. [¿Por qué Docker?](https://github.com/mmanosaslva/SaboreaColombia2/blob/main/back/readmes/06-docker-setup.md#-por-qué-docker)
+3. [Conceptos clave](https://github.com/mmanosaslva/SaboreaColombia2/blob/main/back/readmes/06-docker-setup.md#-conceptos-clave)
+4. [Requisitos](https://github.com/mmanosaslva/SaboreaColombia2/blob/main/back/readmes/06-docker-setup.md#-requisitos)
+5. [Pasos para usar Docker](https://github.com/mmanosaslva/SaboreaColombia2/blob/main/back/readmes/06-docker-setup.md#-pasos-para-usar-docker)
+6. [Flujo visual](https://github.com/mmanosaslva/SaboreaColombia2/blob/main/back/readmes/06-docker-setup.md#-flujo-visual)
+7. [Comandos útiles](https://github.com/mmanosaslva/SaboreaColombia2/blob/main/back/readmes/06-docker-setup.md#-comandos-útiles)
+8. [Troubleshooting](https://github.com/mmanosaslva/SaboreaColombia2/blob/main/back/readmes/06-docker-setup.md#-troubleshooting)
+9. [Checklist](https://github.com/mmanosaslva/SaboreaColombia2/blob/main/back/readmes/06-docker-setup.md#-checklist)
 
 ---
 
@@ -844,4 +844,4 @@ Antes de decir "todo funciona":
 
 ---
 
-➡️ [Volver al índice](../README.md)
+➡️ [Volver al índice](https://github.com/mmanosaslva/SaboreaColombia2/tree/main)

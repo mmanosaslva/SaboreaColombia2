@@ -719,4 +719,4 @@
 | DELETE /restaurantes | ❌ | ❌ | ✅ |
 | GET /auth/perfil | ❌ | ✅ | ✅ |
 
-➡️ [Volver al índice](../README.md)
+➡️ [Volver al índice](https://github.com/mmanosaslva/SaboreaColombia2/tree/main)

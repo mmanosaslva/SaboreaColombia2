@@ -1,28 +1,33 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
-@Entity('usuario')
-export class UsuarioEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+@Entity('usuarios')
+export class Usuario {
+  @ApiProperty()
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @Column({ type: 'varchar', length: 255 })
-  nombre: string;
-
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @ApiProperty()
+  @Column({ unique: true })
   email: string;
 
-  @Column({ type: 'varchar', length: 255 })
-  contraseña: string;
+  @ApiProperty()
+  @Column()
+  password: string;
 
-  @Column({ type: 'enum', enum: ['usuario', 'administrador'], default: 'usuario' })
-  rol: 'usuario' | 'administrador';
+  @ApiProperty()
+  @Column()
+  nombre: string;
 
-  @Column({ type: 'boolean', default: true })
-  activo: boolean;
+  @ApiProperty()
+  @Column({ default: 'usuario' })
+  rol: string;
 
+  @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
 
+  @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
 }
