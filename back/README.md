@@ -5,7 +5,7 @@
 ## 📚 Documentación Completa
 
 1. [Estructura del Proyecto](./01-estructura-proyecto.md)
-2. [Dependencias](./02-dependencias.md)
+2. [Dependencias](https://github.com/mmanosaslva/SaboreaColombia2/blob/main/back/readmes/02-dependencias.md)
 3. [Entidades](./03-entidades.md)
 4. [Diagrama MER](./04-MER.md)
 5. [Casos de Uso](./05-casos-uso.md)

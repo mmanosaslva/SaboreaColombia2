@@ -191,4 +191,4 @@ PLATO (N) ←──Many-to-Many──→ (N) RESTAURANTE
 
 ---
 
-➡️ [Volver al índice](../readmes/01-estructura-proyecto.md)
+➡️ [Volver al índice](https://github.com/mmanosaslva/SaboreaColombia2/tree/main/back#readme)
