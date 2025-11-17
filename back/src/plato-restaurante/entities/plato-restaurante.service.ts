@@ -20,50 +20,69 @@ export class PlatoRestauranteService {
     private readonly restauranteRepo: Repository<RestauranteEntity>,
   ) {}
 
+  // POST - Asignar plato a restaurante
   async create(dto: CreatePlatoRestauranteDto) {
     const plato = await this.platoRepo.findOne({ where: { id: dto.platoId } });
     if (!plato) throw new NotFoundException('El plato no existe');
 
-    const restaurante = await this.restauranteRepo.findOne({
-      where: { id: dto.restauranteId },
-    });
+    const restaurante = await this.restauranteRepo.findOne({ where: { id: dto.restauranteId } });
     if (!restaurante) throw new NotFoundException('El restaurante no existe');
 
     const existe = await this.repo.findOne({
-      where: {
-        platoId: dto.platoId,
-        restauranteId: dto.restauranteId,
-      },
+      where: { platoId: dto.platoId, restauranteId: dto.restauranteId },
     });
 
-    if (existe)
-      throw new ConflictException(
-        'Este plato ya está registrado en este restaurante',
-      );
+    if (existe) throw new ConflictException('Este plato ya está registrado en este restaurante');
 
-    const nuevo = this.repo.create(dto);
-    return this.repo.save(nuevo);
+    const entidad = this.repo.create(dto);
+    return this.repo.save(entidad);
   }
 
-  findAll() {
-    return this.repo.find();
-  }
-
-  async findOne(id: string) {
-    const registro = await this.repo.findOne({ where: { id } });
-    if (!registro) throw new NotFoundException('Registro no encontrado');
-    return registro;
-  }
-
+  // PATCH - Actualizar precio o disponibilidad
   async update(id: string, dto: UpdatePlatoRestauranteDto) {
-    const registro = await this.findOne(id); 
-
+    const registro = await this.findOne(id);
     Object.assign(registro, dto);
     return this.repo.save(registro);
   }
 
+  // GET por id
+  async findOne(id: string) {
+    const registro = await this.repo.findOne({
+      where: { id },
+      relations: ['plato', 'restaurante'],
+    });
+
+    if (!registro) throw new NotFoundException('Registro no encontrado');
+    return registro;
+  }
+
+  // DELETE
   async remove(id: string) {
     const registro = await this.findOne(id);
-    return this.repo.remove(registro);
+    await this.repo.remove(registro);
+    return { mensaje: 'Plato removido del restaurante exitosamente' };
+  }
+
+  // GET platos de un restaurante
+  async findPlatosPorRestaurante(restauranteId: string) {
+
+    const restaurante = await this.restauranteRepo.findOne({
+      where: { id: restauranteId }
+    });
+
+    if (!restaurante) throw new NotFoundException('Restaurante no encontrado');
+
+    const [data, total] = await this.repo.findAndCount({
+      where: { restauranteId },
+      relations: ['plato'],
+    });
+
+    if (!total) throw new NotFoundException('Este restaurante no tiene platos registrados');
+
+    return {
+      data,
+      total,
+      restaurante: restaurante.nombre,
+    };
   }
 }
