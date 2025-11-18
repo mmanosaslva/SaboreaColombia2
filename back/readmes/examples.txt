@@ -1,0 +1,29 @@
+**Ejemplos:**
+- Caribe
+- Andina
+- Pacífica
+- Orinoquía
+- Amazonia
+
+**Ejemplos por REGION:**
+- Caribe: Cartagena, Santa Marta
+- Andina: Bogotá, Medellín
+- Pacífica: Cali, Buenaventura
+- Orinoquía: Villavicencio, Puerto López
+- Amazonia: Leticia, Puerto Nariño
+
+---
+
+**Ejemplo Completo - Bandeja Paisa:**
+```
+nombre: "Bandeja Paisa"
+descripcion: "Plato contundente y variado típico de Antioquia"
+historia: "Surge de la mezcla entre tradición española e ingredientes 
+          locales. Era comida de arrieros antes de viajes por montañas."
+ingredientes: "Frijoles, arroz, carne molida, huevo frito, arepa, 
+              aguacate, tomate, patacón, queso fresco, chorizo, morcilla"
+imagenUrl: "https://..."
+regionId: <ID_ANDINA>
+```
+
+
